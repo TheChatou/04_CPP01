@@ -6,7 +6,7 @@
 /*   By: fcoullou <fcoullou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:24:07 by fcoullou          #+#    #+#             */
-/*   Updated: 2024/11/07 11:15:38 by fcoullou         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:38:18 by fcoullou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,18 @@ Harl::~Harl()
 {
 	std::cout << "** Goodbye Harl, and thanks for complaining** " << std::endl;
 }
-
+//	Apres avoir declare une macro NBLEVELS, on cree un tableau de string contenant les differents niveaux de log.
+// On cree ensuite un tableau de pointeurs de fonctions membres.
+// Chaque pointeur de fonction pointe sur une fonction membre de Harl.
+// En fonction du log passe en argument ("level"), on appelle la fonction membre correspondante.
 void	Harl::complain(std::string level)
 {
-	std::string	const l_switch[NBLEVELS] = {"DEBUG", "INFO", "WARNING", "ERROR"};
+	std::string	const level_switch[NBLEVELS] = {"DEBUG", "INFO", "WARNING", "ERROR"};
 	void (Harl::*func_ptr[NBLEVELS])(void) = {&Harl::debug, &Harl::info, &Harl::warning, &Harl::error};
 
 	for (int i = 0; i < NBLEVELS; i++)
 	{
-		if (level == l_switch[i])
+		if (level == level_switch[i])
 		{
 			(this->*func_ptr[i])();
 		}

@@ -6,7 +6,7 @@
 #    By: fcoullou <fcoullou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/18 11:31:39 by fcoullou          #+#    #+#              #
-#    Updated: 2024/11/04 16:45:38 by fcoullou         ###   ########.fr        #
+#    Updated: 2024/11/26 11:53:06 by fcoullou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,13 @@ NAME			= CelebrityDeathmatch
 ##	FILES		################################################################
 SRC				= main.cpp Weapon.cpp HumanA.cpp HumanB.cpp
 #------------------------------------------------------------------------------#
-OBJ				= $(SRC:.cpp=.o)
+OBJ				= $(addprefix $(OBJDEP_DIR)/, $(SRC:.cpp=.o))
+DEP 			= $(OBJ:%.o=%.d)
 #------------------------------------------------------------------------------#
 OUTPUT_LEAKS 	= valgrind-out.txt
+
+##	DIRECTORIES		############################################################
+OBJDEP_DIR            = objdep
 
 ################################################################################
 ##	COMPILER	################################################################
@@ -28,20 +32,15 @@ OUTPUT_LEAKS 	= valgrind-out.txt
 ##	-g3 : Génère des informations de débogage détaillées dans le fichier exécutable.
 ##	-ftrapv : Génère des erreurs d'exécution en cas de débordement arithmétique.
 CFLAGS			= -Wall -Werror -Wextra -I./include -g3 -ftrapv
-# -fsanitize=undefined -fsanitize=address
 
-##  -MMD : Génère des fichiers .d avec des dépendances pour chaque fichier source, utile pour la recompilation conditionnelle avec make.
-##  -c : Compile les fichiers source sans les lier, générant des fichiers objet (.o).
-CPPFLAGS		= -std=c++98
-
-##  -lft : Lie votre programme avec la bibliothèque libft.
-##  -lreadline : Lie votre programme avec la bibliothèque readline.
-LFLAGS 			= -L./libft_v2 -lft -lreadline -lm
-# -fsanitize=undefined -static-libsan -fsanitize=address
+##	-std=c++98 : Utilise la norme C++98.
+##	-MMD : Génère des fichiers .d avec des dépendances pour chaque fichier source, utile pour la recompilation conditionnelle avec make.
+##	-c : Compile les fichiers source sans les lier, générant des fichiers objet (.o).
+CPPFLAGS		= -std=c++98 -MMD -c
 
 #------------------------------------------------------------------------------#
 AR				= ar
-CC				= g++
+CC				= c++
 RM				= rm -f
 CD				= cd
 DIR_DUP			= mkdir -p $(@D)
@@ -68,9 +67,12 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 	@printf "$(GREEN)[CREATED]$(RESET) : $(NAME)" $(CLEAR_EOL_FROM_CURSOR) "\n"
 
-%.o: %.cpp
+$(OBJDEP_DIR)/%.o: %.cpp | $(OBJDEP_DIR)
 	@printf "$(GREEN)[COMPILATION]$(RESET) : $<$(CLEAR_EOL)\r"
 	@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $< 
+	
+$(OBJDEP_DIR):
+	@mkdir -p $@
 
 #------------------------------------------------------------------------------#
 clean:
@@ -89,7 +91,8 @@ clean:
     else \
         printf "$(CLEAR_EOL)make: *** All files already deleted ***$(RESET)\n"; \
 	fi
-	
+	@$(RM) -r $(OBJDEP_DIR) $(OUTPUT_LEAKS)
+    
 #------------------------------------------------------------------------------#
 fclean: clean
 	@if [ -f $(NAME) ]; then \
@@ -116,3 +119,5 @@ valgrind : all
 .PHONY: all bonus clean fclean re test leaks  
 
 #------------------------------------------------------------------------------#
+
+-include $(DEP)

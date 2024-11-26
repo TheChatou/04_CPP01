@@ -6,25 +6,33 @@
 /*   By: fcoullou <fcoullou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 17:04:35 by fcoullou          #+#    #+#             */
-/*   Updated: 2024/11/04 18:27:03 by fcoullou         ###   ########.fr       */
+/*   Updated: 2024/11/26 13:20:24 by fcoullou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HumanB.hpp"
 
 // PUBLIC	////////////////////////////////////////////////////////////////////
-HumanB::HumanB() : _name(""), _weapon(NULL) {}
+HumanB::HumanB(std::string name) : _name(name), _weapon(NULL) {}
 
-HumanB::HumanB(std::string name) : _name(name) {}
-
-HumanB::~HumanB() {}
+HumanB::~HumanB()
+{
+	std::cout << _name << " has been deleted from this world !" << std::endl;
+}
 
 void	HumanB::attack()
 {
-	std::cout << _name << " attacks with their " << _weapon->getType() << std::endl;
+	if (_weapon)
+	{
+		std::cout << _name << " attacks with " << _weapon->getType() << std::endl;
+	}
+	else
+	{
+		std::cout << _name << " attacks with his bare hands" << std::endl;
+	}
 }
 
-void	HumanB::setWeapon(Weapon weapon)
+void	HumanB::setWeapon(Weapon &weapon)
 {
-	*_weapon = weapon;
+	this->_weapon = &weapon;
 }

@@ -6,7 +6,7 @@
 /*   By: fcoullou <fcoullou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 17:02:12 by fcoullou          #+#    #+#             */
-/*   Updated: 2024/11/04 18:10:59 by fcoullou         ###   ########.fr       */
+/*   Updated: 2024/11/26 13:07:36 by fcoullou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 // PUBLIC	////////////////////////////////////////////////////////////////////
 Weapon::Weapon() : _type("") {}
 
-Weapon::Weapon(std::string weaponType)
-{
-	_type = weaponType;
-}
+Weapon::Weapon(std::string weaponType) : _type(weaponType) {}
 
-Weapon::~Weapon() {}
+Weapon::~Weapon()
+{
+	std::cout << _type << " has been deleted from this world !" << std::endl;
+}
 
 std::string	const &Weapon::getType() const
 {
